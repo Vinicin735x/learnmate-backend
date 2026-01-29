@@ -49,7 +49,7 @@ uvicorn main:app --reload
 
 The server will be running at: http://127.0.0.1:8000. Access the interactive documentation (Swagger) at: http://127.0.0.1:8000/docs.
 ```
-🤝 Contribution
+## 🤝 Contribution
 Project developed for study and portfolio purposes. Suggestions are welcome!
 
 Developed by Vinícius Castelhano Mantovani

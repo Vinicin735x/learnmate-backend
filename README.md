@@ -18,7 +18,7 @@ This project was built focusing on performance and modern architecture:
 ## 🚀 Features (Roadmap)
 
 - [x] **Initial Setup:** FastAPI environment configuration and Health Check.
-- [ ] **LLM Integration:** Automatic text summarization via OpenAI.
+- [x] **LLM Integration:** Automatic text summarization via OpenAI.
 - [ ] **Database:** Content and user persistence (PostgreSQL).
 - [ ] **Vector Search:** Implementation of Embeddings for semantic content recommendation.
 - [ ] **Background Tasks:** Asynchronous processing for long texts.

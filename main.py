@@ -20,7 +20,10 @@ client = AsyncOpenAI(
 app = FastAPI(
     title='LearnMate API', 
     version='0.1.0',
-    description='API de assistente de estudos utilizando LLMs para resumo e geração de conteúdo.'
+    description='Backend para processamento de resumos e trilhas de estudo utilizando Llama 3 via Groq.',
+    contact={
+        'name': 'Vinícius Castelhano Mantovani'
+    }
     )
 
 
@@ -35,6 +38,13 @@ class SummarySchema(BaseModel):
 class SummarizeRequest(BaseModel):
     text: str = Field(..., min_length=50, description='O texto completo a ser resumido')
     language: str = Field('pt-br', description='O idioma desejado para o resumo')
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'content': 'O Event Loop do Python é o núcleo central que gerencia tarefas assíncronas...'
+            }
+        }
 
 class SummarizeResponse(BaseModel):
     summary: str
@@ -93,6 +103,26 @@ async def get_summary_by_id(
         original_length=len(db_summary.original_content),
         summary_length=len(db_summary.summary_text)
     )
+
+@app.delete('/summaries/{summary_id}', status_code=204, tags=['History'])
+async def delete_summary(
+    summary_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    '''
+    Remove um resumo do banco de dados permanentemente
+    '''
+    query = select(Summary).where(Summary.id == summary_id)
+    result = await db.execute(query)
+    db_summary = result.scalars().first()
+
+    if not db_summary:
+        raise HTTPException(status_code=404, detail='Resumo não encontrado.')
+    
+    await db.delete(db_summary)
+    await db.commit()
+
+    return None
 
 @app.post('/summarize', response_model=SummarizeResponse, tags=['AI Features'], status_code=201)
 async def summarize_content(

@@ -39,12 +39,16 @@ class SummarizeRequest(BaseModel):
     text: str = Field(..., min_length=50, description='O texto completo a ser resumido')
     language: str = Field('pt-br', description='O idioma desejado para o resumo')
 
-    class Config:
-        schema_extra = {
-            'example': {
-                'content': 'O Event Loop do Python é o núcleo central que gerencia tarefas assíncronas...'
-            }
+    model_config = {
+        'json_schema_extra': {
+            'examples': [
+                {
+                    'text': 'O Event Loop do Python é o núcleo central que gerencia tarefas assíncronas...',
+                    'language': 'pt-br'
+                }
+            ]
         }
+    }
 
 class SummarizeResponse(BaseModel):
     summary: str
@@ -53,12 +57,12 @@ class SummarizeResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
-@app.get('/healt', tags=['System'])
-def health_check():
+@app.get('/health', tags=['System'])
+async def root_health_check() -> dict:
     '''
-    Verifica se a API está online e respondendo
+    Verifica se a API está online e respondendo.
     '''
-    return {'statys': 'active'}
+    return {'status': 'active'}
 
 @app.get('/summaries', response_model=List[SummarizeResponse], tags=['History'])
 async def get_all_summaries(

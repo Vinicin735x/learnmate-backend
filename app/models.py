@@ -1,7 +1,7 @@
 from sqlalchemy import String, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
-from database import Base
+from app.database import Base
 
 class Summary(Base):
     __tablename__ = 'summaries'
@@ -12,4 +12,4 @@ class Summary(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     def __repr__(self) -> str:
-        return f'<Summary(id={self.id}, create_at{self.created_at})>'
+        return f'<Summary(id={self.id}, create_at={self.created_at})>'

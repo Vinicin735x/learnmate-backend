@@ -1,7 +1,7 @@
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine
-from database import Base, DATABASE_URL
-import models
+from app.database import Base, DATABASE_URL
+import app.models as models
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config

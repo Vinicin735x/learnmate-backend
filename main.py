@@ -5,11 +5,12 @@ from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
-from models import Summary
+from app.database import get_db
+from app.models import Summary
 from sqlalchemy import select
 from typing import List
 from datetime import datetime
+from app.schemas import SummarizeRequest, SummarizeResponse, SummarySchema
 
 load_dotenv()
 client = AsyncOpenAI(
@@ -25,44 +26,6 @@ app = FastAPI(
         'name': 'Vinícius Castelhano Mantovani'
     }
     )
-
-
-class SummarySchema(BaseModel):
-    id: int
-    summary_text: str
-    created_at: datetime
-
-    class Config:
-        from_attributes = True 
-
-class SummarizeRequest(BaseModel):
-    text: str = Field(..., min_length=50, description='O texto completo a ser resumido')
-    language: str = Field('pt-br', description='O idioma desejado para o resumo')
-
-    model_config = {
-        'json_schema_extra': {
-            'examples': [
-                {
-                    'text': 'O Event Loop do Python é o núcleo central que gerencia tarefas assíncronas...',
-                    'language': 'pt-br'
-                }
-            ]
-        }
-    }
-
-class SummarizeResponse(BaseModel):
-    summary: str
-    original_length: int
-    summary_length: int
-
-    model_config = {"from_attributes": True}
-
-@app.get('/health', tags=['System'])
-async def root_health_check() -> dict:
-    '''
-    Verifica se a API está online e respondendo.
-    '''
-    return {'status': 'active'}
 
 @app.get('/summaries', response_model=List[SummarizeResponse], tags=['History'])
 async def get_all_summaries(
